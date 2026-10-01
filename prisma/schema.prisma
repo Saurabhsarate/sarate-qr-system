@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Customer {
+  id        String     @id @default(cuid())
+  name      String?
+  createdAt DateTime   @default(now())
+  feedbacks Feedback[]
+}
+
+model Feedback {
+  id                  String    @id @default(cuid())
+  customerId          String?
+  customer            Customer? @relation(fields: [customerId], references: [id])
+  rating              Int
+  feedbackText        String?
+  serviceType         String?
+  googleReviewClicked Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+}
+
+model ReviewEvent {
+  id        String   @id @default(cuid())
+  sessionId String
+  eventType String
+  rating    Int?
+  createdAt DateTime @default(now())
+  metadata  String?  // Stored as JSON string
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
