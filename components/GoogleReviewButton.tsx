@@ -39,6 +39,13 @@ export function GoogleReviewButton({ rating, feedback, googleReviewUrl }: Google
         }),
       }).catch(console.error);
 
+      // Automatically copy the feedback text to the user's clipboard
+      try {
+        await navigator.clipboard.writeText(feedback);
+      } catch (err) {
+        console.error("Auto-copy failed", err);
+      }
+
       window.open(googleReviewUrl, "_blank", "noopener,noreferrer");
       router.push("/thank-you");
     } catch (error) {
